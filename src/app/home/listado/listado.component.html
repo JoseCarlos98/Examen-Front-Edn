@@ -1,0 +1,22 @@
+<app-modal-registro [editarData]="editatSeleccionado" [cuentaOrCatalogo]="catalogos" [modeloYTitulo]="modeloYTitulo"></app-modal-registro>
+<table class="table table-striped mt-5">
+    <thead>
+      <tr *ngIf="cuentaOCatalogo.length">
+        <th scope="col"> {{cuentaOCatalogo[0].alias ? 'Alias' : 'Banco'}}</th>
+        <th scope="col"> {{cuentaOCatalogo[0].alias ? 'Banco' : 'Clave'}}</th>
+        <th scope="col"> {{cuentaOCatalogo[0].alias ? 'Ultmos 4 digitos' : 'Nombre corto'}}</th>
+        <th scope="col" *ngIf="cuentaOCatalogo[0].Statu"> Orden</th>
+        <th scope="col" *ngIf="cuentaOCatalogo[0].Statu"> Status</th>
+      </tr>
+    </thead>
+  
+    <tbody>
+      <tr class="animate__animated animate__fadeIn table " [ngClass]="{'table-active': editatSeleccionado?.id == data.id}" *ngFor="let data of cuentaOCatalogo" (click)="editarCuenta(data)">
+        <td >{{data?.alias || data.banco}}</td>
+        <td>{{data?.c_banco?.banco || data.clave}}</td>
+        <td>{{data?.ultimos_digitos || data.nombre_corto}}</td>
+        <td *ngIf="data.Statu">{{data?.orden || '-'}}</td>
+        <td *ngIf="data.Statu">{{data?.Statu?.status || '-'}}</td>
+      </tr>
+    </tbody>
+  </table>

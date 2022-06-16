@@ -1,0 +1,72 @@
+
+<ng-template #content let-modal>
+
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{editarData ? 'EDITAR ' + modeloYTitulo.titulo : 'NUEVO ' + modeloYTitulo.titulo}}</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form  [formGroup]="addForm">
+        <div *ngIf="modeloYTitulo.modelo == 'cuentas'">
+          <label for="dateOfBirth">Alias</label>
+          <div class="input-group">
+            <input id="alias" class="form-control" placeholder="Alias" formControlName="alias">
+          </div>
+        </div>
+
+        <select class="custom-select custom-select-lg mb-3 mt-3" formControlName="id_banco" *ngIf="modeloYTitulo.modelo == 'cuentas'" >
+            <option value="0">Selecciónar un banco</option>
+            <option [value]="data.id" *ngFor="let data of cuentaOrCatalogo">{{data.banco}}</option>
+        </select>
+
+        <div class="mb-3" *ngIf="modeloYTitulo.modelo == 'cuentas'">
+            <label for="dateOfBirth">Ultimos 4 digitos</label>
+            <div class="input-group">
+              <input id="alias" class="form-control" placeholder="Ultimos 4 digitos"  formControlName="ultimos_digitos">
+            </div>
+        </div>
+
+
+        <div *ngIf="modeloYTitulo.modelo == 'catalogos'">
+          <label for="dateOfBirth">Clave</label>
+          <div class="input-group">
+            <input id="clave" class="form-control" placeholder="Clave" formControlName="clave">
+          </div>
+        </div>
+        
+        <div *ngIf="modeloYTitulo.modelo == 'catalogos'">
+          <label for="dateOfBirth">Nombre corto</label>
+          <div class="input-group">
+            <input id="nombre_corto" class="form-control" placeholder="Nombre Corto" formControlName="nombre_corto">
+          </div>
+        </div>
+
+        <div *ngIf="modeloYTitulo.modelo == 'catalogos'">
+          <label for="dateOfBirth">Banco</label>
+          <div class="input-group">
+            <input id="banco" class="form-control" placeholder="Banco" formControlName="banco">
+          </div>
+        </div>
+
+        <div *ngIf="modeloYTitulo.modelo == 'catalogos'">
+          <label for="dateOfBirth">Orden</label>
+          <div class="input-group">
+            <input id="orden" class="form-control" placeholder="Orden" formControlName="orden">
+          </div>
+        </div>
+
+      </form>
+      
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="modal.close('Save click'); borrarEditado = true;">ELIMINAR</button>
+      <button type="button" class="btn btn-warning" (click)="modal.close()">CANCELAR</button>
+      <button type="button" class="btn btn-success" (click)="modal.close('Save click')">GUARDAR</button>
+    </div>
+
+  </ng-template>
+  <div ElementRef>
+    <button  class="btn btn-success"  [ngClass]="{'btn-warning' : editarData }"(click)="open(content)">{{editarData ? 'EDITAR ' + modeloYTitulo.titulo : 'NUEVO ' + modeloYTitulo.titulo}}</button>
+  </div>
+  
