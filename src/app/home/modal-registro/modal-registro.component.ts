@@ -1,9 +1,9 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService } from '../../services/api.service';
-import swal from "sweetalert2";
 import Swal from 'sweetalert2';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-modal-registro',
@@ -17,7 +17,6 @@ export class ModalRegistroComponent implements OnInit {
   @Input() cuentaOrCatalogo :any
 
   closeResult: string = '';
-
   borrarEditado: boolean = false;
 
   addForm = this.fb.group({
@@ -59,39 +58,44 @@ export class ModalRegistroComponent implements OnInit {
         orden         : this.addForm.get('orden')!.value,
       }
       
-      this.closeResult = `Closed with: ${result}`;
       if (result) {
         if (this.editarData && this.borrarEditado) {
           this.apiServices.delete(this.modeloYTitulo.modelo, this.editarData.id)
-          .subscribe( _ => { 
-            Swal.fire('Eliminado con exito'); this.borrarEditado = false 
-            this.editarData = null;
-          })
+          .subscribe( _ => this.alerta('', true))
 
         } else if (this.editarData) {
           this.apiServices.editar(this.modeloYTitulo.modelo, this.modeloYTitulo.modelo == 'catalogos' ? catalogo : cuenta, this.editarData.id)
-          .subscribe( _ => { 
-            Swal.fire('Actualizado con exito');
-            this.editarData = null;
+          .subscribe( resp => {
+            if (resp === true) this.alerta('Actualizado con exito!')
+            else swal.fire('Error', resp, 'error')
           })
-        
+          
         } else {
           this.apiServices.registro(this.modeloYTitulo.modelo, this.modeloYTitulo.modelo == 'catalogos' ? catalogo : cuenta)
-          .subscribe( _ => { 
-            Swal.fire('Creado con exito')
-            this.editarData = null;
+          .subscribe( resp => {
+            if (resp === true) this.alerta('Creado con exito!')
+              else swal.fire('Error', resp, 'error')
           }) 
         }
       }
-    },(reason) => this.closeResult = `Dismissed ${this.getDismissReason(reason)}`);
+    })
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) return 'by pressing ESC';
-      else if (reason === ModalDismissReasons.BACKDROP_CLICK) return 'by clicking on a backdrop';
-       else return `with: ${reason}`;
+  alerta(mensaje?:string, borrar?:boolean){
+    if (borrar) {
+      this.borrarEditado = false;
+      Swal.fire({
+        title: `Estas seguro de eliminar ${this.editarData?.alias || this.editarData.banco}`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, eliminar!'
+      }).then((result) => { if (result.isConfirmed) Swal.fire(`${this.editarData?.alias || this.editarData.banco} eliminado!`)}) ;
+
+    } else {
+      Swal.fire(mensaje);
+      this.editarData = null;
+    }
   }
-
-
-
 }

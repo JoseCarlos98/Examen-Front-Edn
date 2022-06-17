@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Subject, of} from 'rxjs';
+import { tap, map, catchError } from 'rxjs/operators';
 
 
 @Injectable({
@@ -23,11 +23,15 @@ export class ApiService {
     const url = `${this.apiBase}${model}/new`;
     
     return this.http.post(url, body).pipe(
-      tap( _ => this.refresh$.next())
+      map((resp:any) => {
+        this.refresh$.next();
+        resp.ok;
+      }),
+      catchError(err =>  of(err.error.errors.errors[0].msg))
     );
   }
 
-  getAll(model: string) {
+  getTodos(model: string) {
     const url = `${this.apiBase}${model}`;
 
     return this.http.get(url)
@@ -37,7 +41,11 @@ export class ApiService {
     const url = `${this.apiBase}${model}/${idEdit}`;
 
     return this.http.put(url, body).pipe(
-      tap( _ => this.refresh$.next())
+      map((resp:any) => {
+        this.refresh$.next();
+        resp.ok;
+      }),
+      catchError(err =>  of(err.error.errors.errors[0].msg))
     );
   }
 

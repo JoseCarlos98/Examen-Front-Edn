@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../services/api.service';
 
@@ -41,13 +41,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getCuentas() {
-    this.apiServices.getAll('cuentas').subscribe((cuentasBancarias:any) => {
+    this.apiServices.getTodos('cuentas').subscribe((cuentasBancarias:any) => {
       this.cuentasBancarias = cuentasBancarias;
     })
   }
 
   getCatalogos() {
-    this.apiServices.getAll('catalogos').subscribe((catalogos:any) => {
+    this.apiServices.getTodos('catalogos').subscribe((catalogos:any) => {
       this.catalogos = catalogos;
     })
   }
