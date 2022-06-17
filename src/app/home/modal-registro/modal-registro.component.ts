@@ -60,20 +60,19 @@ export class ModalRegistroComponent implements OnInit {
       
       if (result) {
         if (this.editarData && this.borrarEditado) {
-          this.apiServices.delete(this.modeloYTitulo.modelo, this.editarData.id)
-          .subscribe( _ => this.alerta('', true))
-
+        
+          this.alerta('', true)
         } else if (this.editarData) {
           this.apiServices.editar(this.modeloYTitulo.modelo, this.modeloYTitulo.modelo == 'catalogos' ? catalogo : cuenta, this.editarData.id)
           .subscribe( resp => {
-            if (resp === true) this.alerta('Actualizado con exito!')
+            if (resp.ok === true) this.alerta('Actualizado con exito!')
             else swal.fire('Error', resp, 'error')
           })
           
         } else {
           this.apiServices.registro(this.modeloYTitulo.modelo, this.modeloYTitulo.modelo == 'catalogos' ? catalogo : cuenta)
           .subscribe( resp => {
-            if (resp === true) this.alerta('Creado con exito!')
+            if (resp.ok === true) this.alerta('Creado con exito!')
               else swal.fire('Error', resp, 'error')
           }) 
         }
@@ -91,8 +90,12 @@ export class ModalRegistroComponent implements OnInit {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Si, eliminar!'
-      }).then((result) => { if (result.isConfirmed) Swal.fire(`${this.editarData?.alias || this.editarData.banco} eliminado!`)}) ;
-
+      }).then((result) => { 
+        if (result.isConfirmed) {
+          this.apiServices.delete(this.modeloYTitulo.modelo, this.editarData.id)
+          .subscribe( _ =>  Swal.fire(`${this.editarData?.alias || this.editarData.banco} eliminado!`))
+          }
+      });
     } else {
       Swal.fire(mensaje);
       this.editarData = null;

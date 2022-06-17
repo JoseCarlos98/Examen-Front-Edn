@@ -23,10 +23,7 @@ export class ApiService {
     const url = `${this.apiBase}${model}/new`;
     
     return this.http.post(url, body).pipe(
-      map((resp:any) => {
-        this.refresh$.next();
-        resp.ok;
-      }),
+      tap( _ => this.refresh$.next()),
       catchError(err =>  of(err.error.errors.errors[0].msg))
     );
   }
@@ -41,10 +38,7 @@ export class ApiService {
     const url = `${this.apiBase}${model}/${idEdit}`;
 
     return this.http.put(url, body).pipe(
-      map((resp:any) => {
-        this.refresh$.next();
-        resp.ok;
-      }),
+      tap( _ => this.refresh$.next()),
       catchError(err =>  of(err.error.errors.errors[0].msg))
     );
   }
